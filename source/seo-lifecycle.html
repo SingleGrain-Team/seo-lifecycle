@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SEO Client Lifecycle</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --ink: #1a1a2e;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .editable:hover {
+    background: rgba(0,0,0,0.04);
+    border-radius: 4px;
+  }
+  .editable:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+    background: #fff;
+    border-radius: 4px;
+  }
+  .milestone-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+  }
+  .milestone-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  }
+  .milestone-card.active {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .connector {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #cbd5e1 20%, #cbd5e1 80%, transparent);
+    flex: 1;
+    align-self: center;
+    min-width: 20px;
+  }
+  .component-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s ease;
+  }
+  .component-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .component-card.tone-red {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+  .component-card.tone-yellow {
+    background: #fefce8;
+    border: 1px solid #fde68a;
+  }
+  .component-card.tone-blue {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+  }
+  .item-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: #f9fafb;
+    margin-bottom: 6px;
+  }
+  .tone-red .item-row {
+    background: white;
+    border: 1px solid #fecaca;
+  }
+  .tone-yellow .item-row {
+    background: white;
+    border: 1px solid #fde68a;
+  }
+  .tone-blue .item-row {
+    background: white;
+    border: 1px solid #bfdbfe;
+  }
+  .item-text {
+    flex: 1;
+    min-height: 20px;
+    padding: 2px 4px;
+    line-height: 1.5;
+    font-size: 14px;
+    word-break: break-word;
+  }
+  .remove-btn {
+    color: #94a3b8;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .remove-btn:hover {
+    color: #ef4444;
+    background: #fee2e2;
+  }
+  .add-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: transparent;
+    transition: border-color 0.15s;
+  }
+  .add-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: white;
+  }
+  .timeline-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .timeline-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+  .timeline-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #fb7185, #c084fc, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: auto;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+  }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+  .btn-primary {
+    background: #1a1a2e;
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #2d2d4a;
+  }
+  .btn-secondary {
+    background: white;
+    color: #1a1a2e;
+    border: 1px solid #e2e8f0;
+  }
+  .btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  .btn-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+  .btn-danger:hover {
+    background: #fee2e2;
+  }
+  .comment-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+  }
+  .duration-pill {
+    background: rgba(255,255,255,0.85);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a2e;
+    display: inline-block;
+  }
+  .fade-in {
+    animation: fadeIn 0.25s ease;
+  }
+  .prose-block {
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    padding: 8px 10px;
+    border-radius: 6px;
+    min-height: 2em;
+  }
+  .prose-block:hover {
+    background: rgba(0,0,0,0.03);
+  }
+  .prose-block:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+    background: white;
+  }
+  .prose-block:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8;
+    font-style: italic;
+    pointer-events: none;
+  }
+  .positioning-callout {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin-bottom: 8px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+  <div class="flex items-start justify-between flex-wrap gap-4">
+    <div>
+      <h1 contenteditable="true" data-bind="title" class="editable text-4xl font-bold gradient-text inline-block">SEO Client Lifecycle</h1>
+      <p contenteditable="true" data-bind="subtitle" class="editable text-slate-600 mt-2 text-lg">Map every stage. Find the breakpoints. Spot the automation.</p>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <button class="btn btn-primary" onclick="exportHTML()" title="Download a standalone HTML with your content baked in, for sharing">Export HTML (share)</button>
+      <button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">Import JSON</button>
+      <input type="file" id="import-file" accept=".json,application/json" class="hidden" onchange="importJSON(event)" />
+      <button class="btn btn-secondary" onclick="openJsonModal()">View / Edit JSON</button>
+      <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</header>
+
+<section class="max-w-7xl mx-auto px-6 pb-6">
+  <div id="timeline" class="timeline-scroll">
+    <div id="timeline-inner" class="flex items-stretch gap-2 pb-4 min-w-min"></div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 pb-20">
+  <div id="detail"></div>
+</section>
+
+<!-- JSON modal -->
+<div id="json-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold">JSON view</h2>
+      <button class="btn btn-secondary" onclick="closeJsonModal()">Close</button>
+    </div>
+    <p class="text-sm text-slate-600 mb-3">Edit the JSON directly, then click Apply. Invalid JSON will be rejected.</p>
+    <textarea id="json-textarea" class="w-full h-96 font-mono text-xs p-3 border border-slate-200 rounded-lg" spellcheck="false"></textarea>
+    <div class="flex gap-2 mt-3 justify-end">
+      <button class="btn btn-secondary" onclick="copyJson()">Copy</button>
+      <button class="btn btn-primary" onclick="applyJson()">Apply</button>
+    </div>
+    <p id="json-error" class="text-sm text-red-600 mt-2 hidden"></p>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "seo-lifecycle-v1";
+
+const COLOR_PALETTE = [
+  "#FB7185", // rose
+  "#C084FC", // purple
+  "#60A5FA", // blue
+  "#34D399", // emerald
+  "#FBBF24", // amber
+  "#FB923C", // orange
+  "#F472B6", // pink
+  "#22D3EE", // cyan
+  "#A78BFA", // violet
+  "#FACC15", // yellow
+];
+
+const COMPONENTS = [
+  { key: "goals",        label: "Goals",                   placeholder: "What this stage should accomplish" },
+  { key: "kpis",         label: "KPIs",                    placeholder: "Metric that measures success" },
+  { key: "people",       label: "People involved",         placeholder: "Name or role" },
+  { key: "ownership",    label: "Team ownership",          placeholder: "Owning team (Sales, AM, Strategy...)" },
+  { key: "tools",        label: "Tools / Systems",         placeholder: "Tool, doc, or system" },
+  { key: "deliverables", label: "Deliverables / Artifacts",placeholder: "What gets produced" },
+  { key: "activities",   label: "Key activities",          placeholder: "A task or activity that happens in this stage" },
+  { key: "handoffs",     label: "Handoffs",                placeholder: "Who → who and what context transfers" },
+  { key: "references",   label: "Reference engagements",   placeholder: "Past client where this stage looked like ___ (e.g., Fabletics: 141-page metadata patch)" },
+  { key: "questions",    label: "Questions to answer",     placeholder: "An open question we still need to resolve", tone: "blue" },
+  { key: "breakpoints",  label: "Breakpoints",             placeholder: "Where it breaks today", tone: "red" },
+  { key: "automation",   label: "Automation opportunities",placeholder: "What could be automated here", tone: "yellow" },
+];
+
+const DEFAULT_DATA = {
+  title: "SEO Client Lifecycle",
+  subtitle: "Map every stage. Find the breakpoints. Spot the automation.",
+  teammates: [
+    "Amy Lecza",
+    "Isaac Andrews",
+    "Meg Brodie",
+    "Hailey Ingeman",
+    "Ivan Smiljkovic",
+    "Eric Siu",
+    "Carissa Cope",
+    "Shaun Merritt",
+    "Chloe Pascoe",
+    "Eddie Hennessy",
+  ],
+  milestones: [
+    {
+      id: "discovery-pitch",
+      name: "Discovery & Pitch",
+      description: "From first call to signed SOW: discovery, diagnostic audit, tiered pitch.",
+      color: COLOR_PALETTE[0],
+      duration: "2–4 weeks",
+      narrative: "Sales (Amr, Eric, Alfredo) runs the first discovery call. SEO leadership joins by call two to do a technical and competitive diagnostic. The working team builds a pitch deck and a diagnostic audit. The diagnostic is grounded in crawl data, Ahrefs, and DataForSEO, and the pitch deck is structured around tiered retainer packages.",
+      positioning: "The diagnostic audit is the credibility anchor and the pitch deck is the commercial ask. Sequencing risk is real — a savvy client can read the audit and conclude they can DIY the highest-ROI items. Make agency value explicit around things the client cannot easily do internally: link outreach velocity, Reddit operations, AEO citation tracking, programmatic content. Tech fixes get framed as table stakes that unlock everything else.",
+      components: emptyComponents(),
+      comments: [],
+    },
+    {
+      id: "kickoff-onboarding",
+      name: "Kickoff & Onboarding",
+      description: "Access setup, brand guardrails, approval workflows, baseline KPIs.",
+      color: COLOR_PALETTE[1],
+      duration: "Weeks 1–2 after signature",
+      narrative: "Account lead runs the kickoff call. Kickoff questions focus on access dependencies, messaging guardrails, approval workflows, and escalation paths — not re-covering pitch ground.",
+      positioning: "The first month is where sequencing risk shows up. Plans that front-load posts or technical work in Week 1 assume fast client response, which never happens. The fix is to flag sequencing dependencies in the kickoff itself so client-side blockers do not become agency-side scope problems later.",
+      components: emptyComponents(),
+      comments: [],
+    },
+    {
+      id: "month-1-execution",
+      name: "Month 1 Execution",
+      description: "Two parallel tracks: technical foundations and visibility quick wins.",
+      color: COLOR_PALETTE[2],
+      duration: "Weeks 1–4",
+      narrative: "Two parallel tracks. The technical/foundations track owns site-level fixes that have to ship before content investment pays off. The visibility/quick wins track owns the things the client can see and feel inside 30 days.",
+      positioning: "The existence of a [SHARED] KPI projections file from Month 1 is what makes the QBR achievable. Without that baseline, the QBR becomes a vibes check instead of a measured review. Make this a standing onboarding requirement, not a per-account decision.",
+      components: emptyComponents(),
+      comments: [],
+    },
+    {
+      id: "steady-state",
+      name: "Steady-State Execution",
+      description: "Monthly rhythm: weekly calls, async Slack, monthly deliverables and reporting.",
+      color: COLOR_PALETTE[3],
+      duration: "Months 2–5",
+      narrative: "The bulk of the engagement. Weekly client status call (account lead + 1-2 ICs), async Slack channel for day-to-day, monthly deliverable cadence per the SOW, and monthly reporting against Good/Better/Best scenarios with a forward-look on next month's priorities.",
+      positioning: "The steady-state phase is where engagements either build trust or accumulate quiet resentment. The differentiator is not how much you ship — it is how visibly you ship it. Reporting consistency in this phase is what earns the renewal conversation at QBR.",
+      components: emptyComponents(),
+      comments: [],
+    },
+    {
+      id: "qbr",
+      name: "QBR",
+      description: "Executive summary, goal vs. actual, channel breakdown, forward look.",
+      color: COLOR_PALETTE[5],
+      duration: "Month 3 and Month 6",
+      narrative: "End of each quarter. QBR structure: executive summary, goal vs. actual against Good/Better/Best scenarios, channel breakdown (organic, AEO, Reddit, conversion), wins tied to metric movement, misses with honest diagnosis, forward look on next quarter priorities, and strategic recommendations for expansion.",
+      positioning: "The QBR is also a sales motion, not just a reporting motion. The 'Forward look' and 'Strategic recommendations' sections are where renewals and expansions get teed up. A QBR that ends with 'here's what happened' without a 'here's what we should do next together' is a missed at-bat.",
+      components: emptyComponents(),
+      comments: [],
+    },
+  ],
+};
+
+function emptyComponents() {
+  const obj = {};
+  COMPONENTS.forEach(c => { obj[c.key] = []; });
+  return obj;
+}
+
+let DATA = load();
+let activeMilestoneId = DATA.milestones[0]?.id || null;
+
+function activeStorageKey() {
+  return (typeof window !== "undefined" && window.__SHARED_STORAGE_KEY__) || STORAGE_KEY;
+}
+
+function load() {
+  try {
+    const seededAt = (typeof window !== "undefined" && window.__SEEDED_AT__) || null;
+    const raw = localStorage.getItem(activeStorageKey());
+    const storedSeededAt = localStorage.getItem(activeStorageKey() + ":seededAt");
+    // Use the local copy only if there's no newer published version than this browser last saw.
+    if (raw && (!seededAt || storedSeededAt === seededAt)) {
+      return migrate(JSON.parse(raw));
+    }
+    // Otherwise fall back to the published/seeded content and remember its version.
+    if (typeof window !== "undefined" && window.__SEEDED_DATA__) {
+      if (seededAt) localStorage.setItem(activeStorageKey() + ":seededAt", seededAt);
+      return migrate(structuredClone(window.__SEEDED_DATA__));
+    }
+    return structuredClone(DEFAULT_DATA);
+  } catch (e) {
+    console.warn("Failed to load saved data, using defaults", e);
+    return structuredClone(DEFAULT_DATA);
+  }
+}
+
+function migrate(data) {
+  if (!data.milestones) data.milestones = [];
+  if (!data.teammates) data.teammates = DEFAULT_DATA.teammates;
+  if (!data.title) data.title = DEFAULT_DATA.title;
+  if (!data.subtitle) data.subtitle = DEFAULT_DATA.subtitle;
+  data.milestones.forEach(m => {
+    if (!m.components) m.components = emptyComponents();
+    COMPONENTS.forEach(c => {
+      if (!Array.isArray(m.components[c.key])) m.components[c.key] = [];
+    });
+    if (!Array.isArray(m.comments)) m.comments = [];
+    if (typeof m.duration !== "string") m.duration = "";
+    if (typeof m.narrative !== "string") m.narrative = "";
+    if (typeof m.positioning !== "string") m.positioning = "";
+    if (!m.color) m.color = COLOR_PALETTE[0];
+  });
+  return data;
+}
+
+function save() {
+  try {
+    localStorage.setItem(activeStorageKey(), JSON.stringify(DATA));
+  } catch (e) {
+    console.error("Failed to save", e);
+  }
+}
+
+function uid(prefix = "id") {
+  return prefix + "-" + Math.random().toString(36).slice(2, 9);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getMilestone(id) {
+  return DATA.milestones.find(m => m.id === id);
+}
+
+function renderAll() {
+  document.querySelector('[data-bind="title"]').textContent = DATA.title;
+  document.querySelector('[data-bind="subtitle"]').textContent = DATA.subtitle;
+  renderTimeline();
+  renderDetail();
+}
+
+function renderTimeline() {
+  const inner = document.getElementById("timeline-inner");
+  inner.innerHTML = "";
+  DATA.milestones.forEach((m, idx) => {
+    if (idx > 0) {
+      const conn = document.createElement("div");
+      conn.className = "connector";
+      inner.appendChild(conn);
+    }
+    const card = document.createElement("div");
+    card.className = "milestone-card flex-shrink-0 rounded-2xl bg-white shadow-sm" + (m.id === activeMilestoneId ? " active" : "");
+    card.style.width = "220px";
+    card.onclick = () => { activeMilestoneId = m.id; renderAll(); scrollDetailIntoView(); };
+    card.innerHTML = `
+      <div style="background: ${m.color}; height: 8px; border-radius: 16px 16px 0 0;"></div>
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold" style="color: ${m.color};">STAGE ${idx + 1}</span>
+          ${m.duration ? `<span class="duration-pill" style="border: 1px solid ${m.color}33;">${escapeHtml(m.duration)}</span>` : ""}
+        </div>
+        <div class="font-bold text-base mb-1 leading-tight">${escapeHtml(m.name)}</div>
+        <div class="text-xs text-slate-500 leading-snug">${escapeHtml(m.description)}</div>
+      </div>
+    `;
+    inner.appendChild(card);
+  });
+
+  // Connector before "add stage" tile
+  if (DATA.milestones.length > 0) {
+    const conn = document.createElement("div");
+    conn.className = "connector";
+    inner.appendChild(conn);
+  }
+
+  // Add stage tile
+  const addTile = document.createElement("div");
+  addTile.className = "flex-shrink-0 rounded-2xl border-2 border-dashed border-slate-300 hover:border-slate-500 hover:bg-white cursor-pointer flex items-center justify-center text-slate-500 hover:text-slate-700 transition";
+  addTile.style.width = "160px";
+  addTile.innerHTML = `<div class="text-center px-4"><div class="text-2xl mb-1">+</div><div class="text-sm font-medium">Add stage</div></div>`;
+  addTile.onclick = addStage;
+  inner.appendChild(addTile);
+}
+
+function scrollDetailIntoView() {
+  setTimeout(() => {
+    document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 50);
+}
+
+function renderDetail() {
+  const wrap = document.getElementById("detail");
+  const m = getMilestone(activeMilestoneId);
+  if (!m) {
+    wrap.innerHTML = `<div class="text-slate-500 text-center py-12">Pick a stage above to start editing.</div>`;
+    return;
+  }
+  const idx = DATA.milestones.findIndex(x => x.id === m.id);
+
+  wrap.innerHTML = `
+    <div class="fade-in">
+      <div class="rounded-2xl overflow-hidden bg-white shadow-sm">
+        <div style="background: linear-gradient(135deg, ${m.color}, ${m.color}cc); padding: 28px 32px;">
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold uppercase tracking-wider text-white/80 mb-1">Stage ${idx + 1} of ${DATA.milestones.length}</div>
+              <h2 contenteditable="true" data-edit-name="${m.id}" class="editable text-3xl font-bold text-white leading-tight mb-2">${escapeHtml(m.name)}</h2>
+              <p contenteditable="true" data-edit-desc="${m.id}" class="editable text-white/90 text-base leading-snug max-w-3xl">${escapeHtml(m.description)}</p>
+            </div>
+            <div class="flex flex-col gap-2 items-end">
+              <div class="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-2">
+                <label class="text-xs text-white/90 font-medium">Color</label>
+                <input type="color" value="${m.color}" oninput="updateMilestoneColor('${m.id}', this.value)" class="w-7 h-7 rounded cursor-pointer border-0" style="background: transparent;" />
+              </div>
+              <div class="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-2">
+                <label class="text-xs text-white/90 font-medium">Duration</label>
+                <input type="text" value="${escapeHtml(m.duration)}" placeholder="e.g. 30 min, 1 week"
+                  oninput="updateDuration('${m.id}', this.value)"
+                  class="bg-white/90 rounded px-2 py-1 text-sm w-32 text-slate-900 placeholder-slate-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6">
+          <div class="mb-6">
+            <div class="section-label">What happens</div>
+            <div contenteditable="plaintext-only" data-edit-narrative="${m.id}"
+                 data-placeholder="Describe what actually happens in this phase…"
+                 class="prose-block">${escapeHtml(m.narrative)}</div>
+          </div>
+
+          <div class="positioning-callout mb-6" style="border-left: 4px solid ${m.color};">
+            <div class="section-label" style="color: ${m.color};">Positioning note</div>
+            <div contenteditable="plaintext-only" data-edit-positioning="${m.id}"
+                 data-placeholder="The strategic framing for this phase — why it exists, what it's really for, the sequencing risk to watch…"
+                 class="prose-block">${escapeHtml(m.positioning)}</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${COMPONENTS.map(c => renderComponentCard(m, c)).join("")}
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-slate-100">
+            ${renderComments(m)}
+          </div>
+
+          <div class="mt-6 pt-4 flex justify-between items-center flex-wrap gap-3">
+            <div class="flex gap-2">
+              <button class="btn btn-secondary" onclick="moveStage('${m.id}', -1)" ${idx === 0 ? "disabled" : ""} style="${idx === 0 ? 'opacity:0.5;cursor:not-allowed;' : ''}">← Move earlier</button>
+              <button class="btn btn-secondary" onclick="moveStage('${m.id}', 1)" ${idx === DATA.milestones.length - 1 ? "disabled" : ""} style="${idx === DATA.milestones.length - 1 ? 'opacity:0.5;cursor:not-allowed;' : ''}">Move later →</button>
+            </div>
+            <button class="btn btn-danger" onclick="deleteStage('${m.id}')">Delete this stage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderComponentCard(m, comp) {
+  const items = m.components[comp.key] || [];
+  const toneClass = comp.tone ? `tone-${comp.tone}` : "";
+  return `
+    <div class="component-card ${toneClass}">
+      <div class="flex items-center gap-2 mb-3">
+        <div style="width: 8px; height: 8px; border-radius: 999px; background: ${m.color};"></div>
+        <h3 class="font-semibold text-sm uppercase tracking-wide text-slate-700">${comp.label}</h3>
+        <span class="ml-auto text-xs text-slate-400">${items.length}</span>
+      </div>
+      <div data-comp-list="${m.id}::${comp.key}">
+        ${items.map((item, i) => `
+          <div class="item-row">
+            <div contenteditable="true" data-edit-item="${m.id}::${comp.key}::${i}" class="item-text">${escapeHtml(item)}</div>
+            <span class="remove-btn" onclick="removeItem('${m.id}', '${comp.key}', ${i})" title="Remove">×</span>
+          </div>
+        `).join("")}
+      </div>
+      <input type="text" class="add-input mt-2" placeholder="${comp.placeholder}"
+        onkeydown="if (event.key === 'Enter') { event.preventDefault(); const v = this.value; this.value = ''; addItem('${m.id}', '${comp.key}', v); }"
+        onblur="{ const v = this.value; this.value = ''; if (v.trim()) addItem('${m.id}', '${comp.key}', v); }" />
+    </div>
+  `;
+}
+
+function renderComments(m) {
+  const teammateOptions = DATA.teammates.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  const commentsList = m.comments.length === 0
+    ? `<p class="text-sm text-slate-400 italic">No comments yet.</p>`
+    : m.comments.map(c => `
+        <div class="comment-card">
+          <div class="flex items-start justify-between gap-2 mb-1">
+            <div>
+              <span class="font-semibold text-sm">${escapeHtml(c.author)}</span>
+              <span class="text-xs text-slate-400 ml-2">${escapeHtml(formatTimestamp(c.timestamp))}</span>
+            </div>
+            <span class="remove-btn" onclick="deleteComment('${m.id}', '${c.id}')" title="Delete comment">×</span>
+          </div>
+          <div class="text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(c.text)}</div>
+        </div>
+      `).join("");
+
+  return `
+    <h3 class="font-semibold text-base mb-3 flex items-center gap-2">
+      Comments
+      <span class="text-xs text-slate-400 font-normal">${m.comments.length}</span>
+    </h3>
+    <div id="comments-list-${m.id}">${commentsList}</div>
+    <div class="mt-4 flex flex-col gap-2 bg-slate-50 p-3 rounded-lg">
+      <div class="flex gap-2">
+        <select id="comment-author-${m.id}" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+          onchange="handleTeammateSelect('${m.id}', this)">
+          <option value="">Choose teammate…</option>
+          ${teammateOptions}
+          <option value="__add_new__">+ Add new teammate…</option>
+        </select>
+      </div>
+      <textarea id="comment-text-${m.id}" class="px-3 py-2 border border-slate-200 rounded-lg text-sm" rows="2" placeholder="Add a comment…"></textarea>
+      <div class="flex justify-end">
+        <button class="btn btn-primary" onclick="addComment('${m.id}')">Post comment</button>
+      </div>
+    </div>
+  `;
+}
+
+function formatTimestamp(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  if (sameDay) return `Today, ${time}`;
+  return d.toLocaleDateString([], { month: "short", day: "numeric" }) + ", " + time;
+}
+
+// --- Mutations ---
+
+function addItem(milestoneId, compKey, raw) {
+  const value = String(raw || "").trim();
+  if (!value) return;
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.components[compKey].push(value);
+  save();
+  renderDetail();
+}
+
+function removeItem(milestoneId, compKey, index) {
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.components[compKey].splice(index, 1);
+  save();
+  renderDetail();
+}
+
+function updateDuration(milestoneId, value) {
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.duration = value;
+  save();
+  renderTimeline();
+}
+
+function updateMilestoneColor(milestoneId, color) {
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.color = color;
+  save();
+  renderAll();
+}
+
+function moveStage(milestoneId, dir) {
+  const idx = DATA.milestones.findIndex(m => m.id === milestoneId);
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= DATA.milestones.length) return;
+  const [m] = DATA.milestones.splice(idx, 1);
+  DATA.milestones.splice(newIdx, 0, m);
+  save();
+  renderAll();
+}
+
+function deleteStage(milestoneId) {
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  if (!confirm(`Delete "${m.name}"? This cannot be undone (but you can re-import a backup JSON).`)) return;
+  DATA.milestones = DATA.milestones.filter(x => x.id !== milestoneId);
+  activeMilestoneId = DATA.milestones[0]?.id || null;
+  save();
+  renderAll();
+}
+
+function addStage() {
+  const newIdx = DATA.milestones.length;
+  const color = COLOR_PALETTE[newIdx % COLOR_PALETTE.length];
+  const m = {
+    id: uid("stage"),
+    name: "New stage",
+    description: "Click to describe this stage.",
+    color,
+    duration: "",
+    narrative: "",
+    positioning: "",
+    components: emptyComponents(),
+    comments: [],
+  };
+  DATA.milestones.push(m);
+  activeMilestoneId = m.id;
+  save();
+  renderAll();
+  scrollDetailIntoView();
+}
+
+function handleTeammateSelect(milestoneId, sel) {
+  if (sel.value !== "__add_new__") return;
+  const parent = sel.parentElement;
+  parent.innerHTML = `
+    <input id="new-teammate-input-${milestoneId}" type="text" placeholder="Teammate name"
+      class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white flex-1" />
+    <button class="btn btn-primary" onclick="confirmNewTeammate('${milestoneId}')">Add</button>
+    <button class="btn btn-secondary" onclick="cancelNewTeammate('${milestoneId}')">Cancel</button>
+  `;
+  const input = document.getElementById(`new-teammate-input-${milestoneId}`);
+  input.focus();
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); confirmNewTeammate(milestoneId); }
+    else if (e.key === "Escape") { cancelNewTeammate(milestoneId); }
+  });
+}
+
+function confirmNewTeammate(milestoneId) {
+  const input = document.getElementById(`new-teammate-input-${milestoneId}`);
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) { cancelNewTeammate(milestoneId); return; }
+  if (!DATA.teammates.includes(name)) {
+    DATA.teammates.push(name);
+    save();
+  }
+  renderDetail();
+  const newSel = document.getElementById(`comment-author-${milestoneId}`);
+  if (newSel) newSel.value = name;
+}
+
+function cancelNewTeammate(milestoneId) {
+  renderDetail();
+}
+
+function addComment(milestoneId) {
+  const author = document.getElementById(`comment-author-${milestoneId}`).value;
+  const text = document.getElementById(`comment-text-${milestoneId}`).value.trim();
+  if (!author) { alert("Pick a teammate first."); return; }
+  if (!text) return;
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.comments.push({
+    id: uid("c"),
+    author,
+    text,
+    timestamp: new Date().toISOString(),
+  });
+  save();
+  renderDetail();
+}
+
+function deleteComment(milestoneId, commentId) {
+  const m = getMilestone(milestoneId);
+  if (!m) return;
+  m.comments = m.comments.filter(c => c.id !== commentId);
+  save();
+  renderDetail();
+}
+
+// --- Header / contenteditable wiring ---
+
+document.addEventListener("input", (e) => {
+  const t = e.target;
+  if (!t.dataset) return;
+  if (t.dataset.bind === "title") { DATA.title = t.textContent.trim(); save(); }
+  else if (t.dataset.bind === "subtitle") { DATA.subtitle = t.textContent.trim(); save(); }
+  else if (t.dataset.editName) {
+    const m = getMilestone(t.dataset.editName);
+    if (m) { m.name = t.textContent.trim() || "Untitled stage"; save(); renderTimeline(); }
+  }
+  else if (t.dataset.editDesc) {
+    const m = getMilestone(t.dataset.editDesc);
+    if (m) { m.description = t.textContent.trim(); save(); renderTimeline(); }
+  }
+  else if (t.dataset.editNarrative) {
+    const m = getMilestone(t.dataset.editNarrative);
+    if (m) { m.narrative = t.textContent; save(); }
+  }
+  else if (t.dataset.editPositioning) {
+    const m = getMilestone(t.dataset.editPositioning);
+    if (m) { m.positioning = t.textContent; save(); }
+  }
+  else if (t.dataset.editItem) {
+    const [milestoneId, compKey, idxStr] = t.dataset.editItem.split("::");
+    const idx = parseInt(idxStr, 10);
+    const m = getMilestone(milestoneId);
+    if (m && m.components[compKey]) {
+      m.components[compKey][idx] = t.textContent.trim();
+      save();
+    }
+  }
+});
+
+// Prevent Enter from inserting newlines in single-line editable fields
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.shiftKey) return;
+  const t = e.target;
+  if (!t.dataset) return;
+  if (t.dataset.bind || t.dataset.editName) {
+    e.preventDefault();
+    t.blur();
+  }
+});
+
+// --- JSON modal ---
+
+function openJsonModal() {
+  document.getElementById("json-textarea").value = JSON.stringify(DATA, null, 2);
+  document.getElementById("json-error").classList.add("hidden");
+  document.getElementById("json-modal").classList.remove("hidden");
+}
+
+function closeJsonModal() {
+  document.getElementById("json-modal").classList.add("hidden");
+}
+
+function applyJson() {
+  const raw = document.getElementById("json-textarea").value;
+  try {
+    const parsed = JSON.parse(raw);
+    DATA = migrate(parsed);
+    activeMilestoneId = DATA.milestones[0]?.id || null;
+    save();
+    renderAll();
+    closeJsonModal();
+  } catch (e) {
+    const err = document.getElementById("json-error");
+    err.textContent = "Invalid JSON: " + e.message;
+    err.classList.remove("hidden");
+  }
+}
+
+function copyJson() {
+  const ta = document.getElementById("json-textarea");
+  ta.select();
+  document.execCommand("copy");
+}
+
+// --- Export / Import ---
+
+function exportHTML() {
+  // Snapshot the current page's full HTML
+  let html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+  // Strip any prior seed-data script so re-shares don't accumulate
+  html = html.replace(/<script id="seed-data">[\s\S]*?<\/script>/g, "");
+  // Inject the current content + a fresh per-file storage key so the shared copy
+  // has its own isolated localStorage (won't collide with the recipient's existing file)
+  const sharedKey = "seo-lifecycle-shared-" + Date.now().toString(36);
+  const seedTag = `<script id="seed-data">window.__SEEDED_DATA__ = ${JSON.stringify(DATA)};window.__SHARED_STORAGE_KEY__ = ${JSON.stringify(sharedKey)};<\/script>`;
+  html = html.replace("</head>", seedTag + "</head>");
+
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `seo-lifecycle-shared-${stamp}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `seo-lifecycle-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      DATA = migrate(parsed);
+      activeMilestoneId = DATA.milestones[0]?.id || null;
+      save();
+      renderAll();
+    } catch (err) {
+      alert("Could not parse JSON: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
+function resetAll() {
+  if (!confirm("Reset everything to the default lifecycle? Your current content will be cleared (export first if you want a backup).")) return;
+  DATA = structuredClone(DEFAULT_DATA);
+  activeMilestoneId = DATA.milestones[0]?.id || null;
+  save();
+  renderAll();
+}
+
+// Initial render
+renderAll();
+</script>
+
+</body>
+</html>

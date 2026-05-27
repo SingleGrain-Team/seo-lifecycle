@@ -1,0 +1,311 @@
+{
+  "title": "SEO Client Lifecycle",
+  "subtitle": "Map every stage. Find the breakpoints. Spot the automation.",
+  "teammates": [
+    "Amy Lecza",
+    "Isaac Andrews",
+    "Meg Brodie",
+    "Hailey Ingeman",
+    "Ivan Smiljkovic",
+    "Eric Siu",
+    "Carissa Cope",
+    "Shaun Merritt",
+    "Chloe Pascoe",
+    "Eddie Hennessy"
+  ],
+  "milestones": [
+    {
+      "id": "discovery-pitch",
+      "name": "Discovery & Pitch",
+      "description": "From first call to signed SOW: discovery, diagnostic audit, tiered pitch.",
+      "color": "#FB7185",
+      "duration": "2–4 weeks",
+      "narrative": "Sales runs the first discovery call. SEO leadership joins by call two to do a technical and competitive diagnostic. The working team builds a pitch deck and a diagnostic audit. The diagnostic is grounded in crawl data, Ahrefs, and DataForSEO, and the pitch deck is structured around tiered retainer or a la carte packages.",
+      "positioning": "The diagnostic audit is the credibility anchor and the pitch deck is the commercial ask. Sequencing risk is real — a savvy client can read the audit and conclude they can DIY the highest-ROI items. Make agency value explicit around things the client cannot easily do internally: link outreach velocity, Reddit operations, AEO citation tracking, programmatic content. Tech fixes get framed as table stakes that unlock everything else.",
+      "components": {
+        "goals": [
+          "Sell new business"
+        ],
+        "kpis": [
+          "% closed",
+          "% ARR"
+        ],
+        "people": [
+          "Sales rep",
+          "SEO team member",
+          "Cross functional team member (if needed)",
+          "SEO team leader",
+          "Eric (not always)"
+        ],
+        "ownership": [
+          "Owning team: Sales",
+          "Supporting team: SEO"
+        ],
+        "tools": [
+          "Ahrefs / Brand Radar",
+          "DataforSEO",
+          "Claude Code",
+          "Claude Design",
+          "Gong",
+          "Slack",
+          "GA4/GSC (optional)"
+        ],
+        "deliverables": [
+          "Discovery call recording (sales)",
+          "Lead dossier (sales)",
+          "Strategy pitch deck (SEO)",
+          "1-3 key data pulls (brand radar, kw report, reddit crawl) (SEO)",
+          "Follow-up emails to prospect (sales)"
+        ],
+        "activities": [],
+        "handoffs": [
+          "Sales hands off call recording, notes, and meeting invite to SEO",
+          "SEO creates deck, works on pricing, hands off to full team in Slack channel",
+          "After pitch, Sales should follow up"
+        ],
+        "references": [],
+        "questions": [
+          "If we have a better discovery deck with more value, how involved does a pitch need to be?",
+          "Who should own which part - how do future hires factor in? What is ideal state?"
+        ],
+        "breakpoints": [
+          "Clear ownership murky - service teams owning most of the prep, deck creation, and pitch itself.",
+          "Follow-up ownership murky - varies between Sales/SEO"
+        ],
+        "automation": []
+      },
+      "comments": []
+    },
+    {
+      "id": "kickoff-onboarding",
+      "name": "Kickoff & Onboarding",
+      "description": "Access setup, brand guardrails, approval workflows, baseline KPIs.",
+      "color": "#C084FC",
+      "duration": "Weeks 1–2 after signature",
+      "narrative": "Account lead runs the kickoff call. Kickoff questions focus on access dependencies, messaging guardrails, approval workflows, and escalation paths — not re-covering pitch ground.",
+      "positioning": "The first month is where sequencing risk shows up. Plans that front-load posts or technical work in Week 1 assume fast client response, which never happens. The fix is to flag sequencing dependencies in the kickoff itself so client-side blockers do not become agency-side scope problems later.",
+      "components": {
+        "goals": [
+          "Build trust with client",
+          "Get quick wins",
+          "Proactive communication",
+          "Roles clearly defined"
+        ],
+        "kpis": [],
+        "people": [
+          "Account lead/owner",
+          "Carissa/Amy - new client onboarding oversight",
+          "Main client POC(s)"
+        ],
+        "ownership": [
+          "SEO team"
+        ],
+        "tools": [
+          "Ahrefs",
+          "DataforSEO",
+          "Gong",
+          "GA4/GSC",
+          "Google ecosystem",
+          "Claude ecosystem",
+          "Brightlocal or GMB profiles"
+        ],
+        "deliverables": [
+          "Kickoff call agenda",
+          "Account access granted",
+          "Brand guidelines, content guidelines, etc shared with SEO"
+        ],
+        "activities": [
+          "(If necessary) Dev meeting for pSEO and technical site work",
+          "(If necessary) Content meeting/Legal meeting to align on brand and content guidelines"
+        ],
+        "handoffs": [],
+        "references": [],
+        "questions": [],
+        "breakpoints": [
+          "Not a lot of clear alignment from the start of the engagement about timeline expectations - can we make this more visible?",
+          "Make sure that month 1 expectations are set correctly so clients aren't starting off disappointed"
+        ],
+        "automation": []
+      },
+      "comments": []
+    },
+    {
+      "id": "month-1-execution",
+      "name": "Month 1 Execution",
+      "description": "Two parallel tracks: technical foundations and visibility quick wins.",
+      "color": "#60A5FA",
+      "duration": "Weeks 1–4",
+      "narrative": "Two parallel tracks. The technical/foundations track owns site-level fixes that have to ship before content investment pays off. The visibility/quick wins track owns the things the client can see and feel inside 30 days.",
+      "positioning": "The existence of a [SHARED] KPI projections file from Month 1 is what makes the QBR achievable. Without that baseline, the QBR becomes a vibes check instead of a measured review. Make this a standing onboarding requirement, not a per-account decision.",
+      "components": {
+        "goals": [
+          "Build/maintain strong client trust and communication",
+          "Showcase proactivity",
+          "Execute quick wins roadmap",
+          "Establish brand/content norms - initial feedback put into action",
+          "Establish ways of working and comms"
+        ],
+        "kpis": [
+          "Initial positive bump on anything published",
+          "Pages being indexed",
+          "Getting work shipped",
+          "Month 1 performance metrics (directional, most likely)",
+          "Client sentiment",
+          "Churn risk"
+        ],
+        "people": [
+          "Account lead",
+          "Amy/Carissa - client support",
+          "Link vendors where applicable",
+          "Reddit Ken where applicable"
+        ],
+        "ownership": [
+          "SEO team"
+        ],
+        "tools": [
+          "Ahrefs",
+          "Brand radar",
+          "DataforSEO",
+          "Reddit",
+          "Clickflow",
+          "Claude/Claude Code/Claude Design",
+          "GA4/GSC",
+          "Brightlocal/GMB"
+        ],
+        "deliverables": [
+          "Month 1 reporting",
+          "Dashboard builds",
+          "Any month 1 deliverables",
+          "Confirmation of strategy after getting all applicable access"
+        ],
+        "activities": [
+          "Delivery of quick wins",
+          "Delivery of dashboard/reporting walkthru"
+        ],
+        "handoffs": [
+          "Initial body of work handed off to clients for feedback"
+        ],
+        "references": [],
+        "questions": [],
+        "breakpoints": [
+          "Misaligned communication expectations",
+          "Issues with Reddit Ken"
+        ],
+        "automation": []
+      },
+      "comments": []
+    },
+    {
+      "id": "steady-state",
+      "name": "Steady-State Execution",
+      "description": "Monthly rhythm: weekly calls, async Slack, monthly deliverables and reporting.",
+      "color": "#34D399",
+      "duration": "Months 2–5",
+      "narrative": "The bulk of the engagement. Weekly client status call (account lead + 1-2 ICs), async Slack channel for day-to-day, monthly deliverable cadence per the SOW, and monthly reporting against Good/Better/Best scenarios with a forward-look on next month's priorities.",
+      "positioning": "The steady-state phase is where engagements either build trust or accumulate quiet resentment. The differentiator is not how much you ship — it is how visibly you ship it. Reporting consistency in this phase is what earns the renewal conversation at QBR.",
+      "components": {
+        "goals": [
+          "Deliver SOW",
+          "Build trust and strong communication",
+          "Keep internal stakeholders informed"
+        ],
+        "kpis": [
+          "Monthly performance metrics",
+          "Client sentiment",
+          "Churn risk"
+        ],
+        "people": [
+          "Account lead",
+          "Amy/Carissa - client support",
+          "Link vendors where applicable",
+          "Reddit Ken where applicable"
+        ],
+        "ownership": [
+          "SEO team"
+        ],
+        "tools": [
+          "Ahrefs",
+          "Brand Radar",
+          "DataforSEO",
+          "Reddit",
+          "Google suite",
+          "Claude suite",
+          "GA4/GSC",
+          "BrightLocal/GMB"
+        ],
+        "deliverables": [
+          "X links purchased",
+          "X Reddit unbranded work"
+        ],
+        "activities": [
+          "Monthly performance readout",
+          "Possible small strategy pivots"
+        ],
+        "handoffs": [],
+        "references": [],
+        "questions": [],
+        "breakpoints": [
+          "Account lead misunderstands level of client satisfaction/dissatisfaction",
+          "Slow delivery time on links or Reddit Ken work"
+        ],
+        "automation": []
+      },
+      "comments": []
+    },
+    {
+      "id": "qbr",
+      "name": "QBR",
+      "description": "Executive summary, goal vs. actual, channel breakdown, forward look.",
+      "color": "#FB923C",
+      "duration": "Month 3 and Month 6",
+      "narrative": "End of each quarter. QBR structure: executive summary, goal vs. actual against Good/Better/Best scenarios, channel breakdown (organic, AEO, Reddit, conversion), wins tied to metric movement, misses with honest diagnosis, forward look on next quarter priorities, and strategic recommendations for expansion.",
+      "positioning": "The QBR is also a sales motion, not just a reporting motion. The 'Forward look' and 'Strategic recommendations' sections are where renewals and expansions get teed up. A QBR that ends with 'here's what happened' without a 'here's what we should do next together' is a missed at-bat.",
+      "components": {
+        "goals": [],
+        "kpis": [],
+        "people": [
+          "Account lead",
+          "Amy/Carissa - client support"
+        ],
+        "ownership": [
+          "SEO team",
+          "Cross-functional team (Paid, Creative) if applicable"
+        ],
+        "tools": [
+          "Ahrefs",
+          "Brand radar",
+          "DataforSEO",
+          "Reddit",
+          "Google suite",
+          "GA4/GSC",
+          "BrightLocal/GMB",
+          "Claude suite"
+        ],
+        "deliverables": [
+          "QBR deck",
+          "Documented strategy pivots"
+        ],
+        "activities": [
+          "Host QBR discussion",
+          "Create QBR report",
+          "Potential strategy pivots",
+          "Potential upsell/cross-sell"
+        ],
+        "handoffs": [
+          "QBR deck created by account lead, cross-functional partner inputs, send to Amy for approval and feedback. Team makes feedback, does walkthru, presents."
+        ],
+        "references": [],
+        "questions": [
+          "Are we effectively managing upsell/cross-sell? How do we bake this in better?"
+        ],
+        "breakpoints": [
+          "QBR happens, but account lead doesn't document strategy changes per SOW",
+          "QBR doesn't happen because performance is down and they don't want to call attention to it",
+          "Misaligned expectations about what a successful QBR is - deliverables not at quality bar"
+        ],
+        "automation": []
+      },
+      "comments": []
+    }
+  ]
+}
