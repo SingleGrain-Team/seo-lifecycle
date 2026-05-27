@@ -905,14 +905,22 @@ function copyJson() {
 // --- Export / Import ---
 
 function exportHTML() {
-  // Snapshot the current page's full HTML
+  // Remove any existing injected seed element via the DOM (not regex) so re-shares
+  // don't accumulate and we can't accidentally match the marker string in our own code.
+  const prevSeed = document.getElementById("seed-data");
+  if (prevSeed) prevSeed.remove();
+  // Snapshot the current page's full HTML (now without a head seed)
   let html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-  // Strip any prior seed-data script so re-shares don't accumulate
-  html = html.replace(/<script id="seed-data">[\s\S]*?<\/script>/g, "");
-  // Inject the current content + a fresh per-file storage key so the shared copy
-  // has its own isolated localStorage (won't collide with the recipient's existing file)
+  // Inject current content + a fresh per-file storage key + version stamp.
+  // The tag string is assembled in pieces so the literal "<script id=seed-data>"
+  // never appears verbatim in source (which is what caused the build self-collision).
   const sharedKey = "seo-lifecycle-shared-" + Date.now().toString(36);
-  const seedTag = `<script id="seed-data">window.__SEEDED_DATA__ = ${JSON.stringify(DATA)};window.__SHARED_STORAGE_KEY__ = ${JSON.stringify(sharedKey)};<\/script>`;
+  const seededAt = new Date().toISOString();
+  const seedTag = '<scr' + 'ipt id="seed-data">'
+    + 'window.__SEEDED_DATA__ = ' + JSON.stringify(DATA) + ';'
+    + 'window.__SHARED_STORAGE_KEY__ = ' + JSON.stringify(sharedKey) + ';'
+    + 'window.__SEEDED_AT__ = ' + JSON.stringify(seededAt) + ';'
+    + '<\/scr' + 'ipt>';
   html = html.replace("</head>", seedTag + "</head>");
 
   const blob = new Blob([html], { type: "text/html" });
